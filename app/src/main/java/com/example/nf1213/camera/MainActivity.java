@@ -12,6 +12,8 @@ import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -29,6 +31,8 @@ public class MainActivity extends Activity {
     private Parameters cameraParameters;
     private CameraPreview mPreview;
     private ImageView imageView;
+    private GestureDetector gestureDetector;
+    private int cameraId = 0;
 
     private String mostRecentImage;
 
@@ -58,7 +62,25 @@ public class MainActivity extends Activity {
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
 
-        initializeCamera();
+        gestureDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                releaseCamera();
+
+                cameraId = cameraId == 1 ? 0 : 1;
+
+                initializeCamera();
+
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (gestureDetector.onTouchEvent(event))
+            return true;
+        return super.onTouchEvent(event);
     }
 
     public String getMostRecentImage() {
@@ -78,7 +100,7 @@ public class MainActivity extends Activity {
     public void initializeCamera() {
         if(mCamera == null) {
             // Create an instance of Camera
-            mCamera = getCameraInstance();
+            mCamera = getCameraInstance(cameraId);
 
             if (mCamera == null) {
                 Intent intent = new Intent(this, NoCameraActivity.class);
@@ -86,9 +108,17 @@ public class MainActivity extends Activity {
             }
 
             // Create our Preview view and set it as the content of our activity.
-            mPreview = new CameraPreview(this, mCamera);
             FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-            preview.addView(mPreview);
+            preview.removeAllViews();
+
+            if (mPreview == null) {
+                mPreview = new CameraPreview(this, mCamera, cameraId);
+                preview.addView(mPreview);
+            } else {
+                mPreview.setCamera(mCamera, cameraId);
+                // this will trigger a surface changed
+                preview.addView(mPreview);
+            }
 
             // Add a listener to the Capture button
             FloatingActionButton captureButton = (FloatingActionButton) findViewById(R.id.button_capture);
@@ -101,15 +131,16 @@ public class MainActivity extends Activity {
                         }
                     }
             );
+
         }
     }
 
-    public Camera getCameraInstance() {
+    public Camera getCameraInstance(int id) {
         if (mCamera != null) {
             return mCamera;
         } else {
             try {
-                mCamera = Camera.open(); // attempt to get a Camera instance
+                mCamera = Camera.open(id); // attempt to get a Camera instance
                 return mCamera; // returns null if camera is unavailable
             } catch (Exception e) {
                 // Camera is not available (in use or does not exist)
@@ -161,8 +192,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        mPreview.getHolder().removeCallback(mPreview);
-        mCamera.stopPreview();
         releaseCamera();              // release the camera immediately on pause event
     }
 
@@ -170,12 +199,11 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         initializeCamera();
-        mCamera.startPreview();
-        mPreview.getHolder().addCallback(mPreview);
     }
 
     private void releaseCamera(){
         if (mCamera != null){
+            mCamera.stopPreview();
             mCamera.release();        // release the camera for other applications
             mCamera = null;
         }

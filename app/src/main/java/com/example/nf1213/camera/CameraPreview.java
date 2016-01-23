@@ -19,10 +19,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private Camera mCamera;
     private int mCameraId;
 
-    public CameraPreview(Context context, Camera camera) {
+    public CameraPreview(Context context, Camera camera, int id) {
         super(context);
         mCamera = camera;
-        mCameraId = 0;
+        mCameraId = id;
 
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
@@ -34,13 +34,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     public void surfaceCreated(SurfaceHolder holder) {
         // The Surface has been created, now tell the camera where to draw the preview.
-        try {
-            mCamera.setPreviewDisplay(holder);
-            mCamera.startPreview();
-            setCameraDisplayOrientation((Activity)this.getContext(), mCameraId, mCamera);
-        } catch (IOException e) {
-            Log.d(TAG, "Error setting camera preview: " + e.getMessage());
-        }
     }
 
     public void surfaceDestroyed(SurfaceHolder holder) {
@@ -67,9 +60,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         try {
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
+            setCameraDisplayOrientation((Activity) this.getContext(), mCameraId, mCamera);
 
         } catch (Exception e){
-            Log.d(TAG, "Error starting camera preview: " + e.getMessage());
+            Log.d(TAG, "Error starting camera preview (surfaceChanged): " + e.getMessage());
         }
     }
 
@@ -96,5 +90,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             result = (info.orientation - degrees + 360) % 360;
         }
         camera.setDisplayOrientation(result);
+    }
+
+    public void setCamera(Camera camera, int id) {
+        mCamera = camera;
+        mCameraId = id;
     }
 }
