@@ -2,6 +2,7 @@ package com.example.nf1213.camera;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
@@ -101,6 +102,18 @@ public class GalleryActivity extends Activity {
                 imageView = (ImageView) convertView;
             }
             imageView.setImageBitmap(BitmapFactory.decodeFile(data.get(position)));
+
+            imageView.setTag(data.get(position));
+
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, ImageViewerActivity.class);
+                    intent.putExtra(ImageViewerActivity.IMAGE_PATH, (String) v.getTag());
+                    startActivity(intent);
+                }
+            });
+
             return imageView;
         }
     }

@@ -27,7 +27,8 @@
             android:name=".NoCameraActivity"
             android:label="@string/title_activity_no_camera"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".GalleryActivity"></activity>
+        <activity android:name=".GalleryActivity" />
+        <activity android:name=".ImageViewerActivity"></activity>
     </application>
 
 </manifest>

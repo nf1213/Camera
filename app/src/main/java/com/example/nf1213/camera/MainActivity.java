@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -29,6 +30,8 @@ public class MainActivity extends Activity {
     private CameraPreview mPreview;
     private ImageView imageView;
 
+    private String mostRecentImage;
+
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
 
@@ -37,7 +40,11 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mostRecentImage = getMostRecentImage();
         imageView = (ImageView) findViewById(R.id.image);
+        if (!TextUtils.isEmpty(mostRecentImage)) {
+            imageView.setImageBitmap(BitmapFactory.decodeFile(mostRecentImage));
+        }
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,6 +59,20 @@ public class MainActivity extends Activity {
         decorView.setSystemUiVisibility(uiOptions);
 
         initializeCamera();
+    }
+
+    public String getMostRecentImage() {
+        String imagePath = "";
+        File dir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "NicoleCameraApp");
+
+        if(dir.exists() && dir.isDirectory()) {
+            if(dir.listFiles().length > 0) {
+                imagePath = dir.listFiles()[0].getAbsolutePath();
+            }
+        }
+
+        return imagePath;
     }
 
     public void initializeCamera() {
