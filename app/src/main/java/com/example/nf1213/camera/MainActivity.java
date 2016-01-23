@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.net.Uri;
@@ -15,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -28,6 +31,7 @@ public class MainActivity extends Activity {
     private Camera mCamera;
     private Parameters cameraParameters;
     private CameraPreview mPreview;
+    private ImageView imageView;
 
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
@@ -36,6 +40,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        imageView = (ImageView) findViewById(R.id.image);
 
         View decorView = getWindow().getDecorView();
         // Hide the status bar.
@@ -67,7 +73,7 @@ public class MainActivity extends Activity {
                         @Override
                         public void onClick(View v) {
                             // get an image from the camera
-                            mCamera.takePicture(shutterCallback, null, jpegCallback);
+                            mCamera.takePicture(null, null, jpegCallback);
                         }
                     }
             );
@@ -117,6 +123,7 @@ public class MainActivity extends Activity {
         if (type == MEDIA_TYPE_IMAGE){
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
                     "IMG_"+ timeStamp + ".jpg");
+
         } else if(type == MEDIA_TYPE_VIDEO) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
                     "VID_"+ timeStamp + ".mp4");
@@ -167,43 +174,15 @@ public class MainActivity extends Activity {
                 FileOutputStream fos = new FileOutputStream(pictureFile);
                 fos.write(data);
                 fos.close();
+
+                Bitmap imgBitmap = BitmapFactory.decodeFile(pictureFile.getAbsolutePath());
+                imageView.setImageBitmap(imgBitmap);
+
             } catch (FileNotFoundException e) {
                 Log.d(TAG, "File not found: " + e.getMessage());
             } catch (IOException e) {
                 Log.d(TAG, "Error accessing file: " + e.getMessage());
             }
-        }
-    };
-
-    final Camera.ShutterCallback shutterCallback = new Camera.ShutterCallback() {
-        @TargetApi(21)
-        @Override
-        public void onShutter() {
-            // previously visible view
-            final View myView = findViewById(R.id.camera_preview);
-
-            // get the center for the clipping circle
-            int cx = myView.getWidth() / 2;
-            int cy = myView.getHeight() / 2;
-
-            // get the initial radius for the clipping circle
-            float initialRadius = (float) Math.hypot(cx, cy);
-
-            // create the animation (the final radius is zero)
-            Animator anim =
-                    ViewAnimationUtils.createCircularReveal(myView, cx, cy, initialRadius, 0);
-
-            // make the view invisible when the animation is done
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                }
-            });
-
-            // start the animation
-            anim.start();
-
         }
     };
 }
