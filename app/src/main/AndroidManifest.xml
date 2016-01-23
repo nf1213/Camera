@@ -3,7 +3,7 @@
     package="com.example.nf1213.camera">
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <uses-feature android:name="android.hardware.camera" />
 
@@ -26,7 +26,8 @@
         <activity
             android:name=".NoCameraActivity"
             android:label="@string/title_activity_no_camera"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".GalleryActivity"></activity>
     </application>
 
 </manifest>
