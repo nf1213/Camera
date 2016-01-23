@@ -2,9 +2,13 @@ package com.example.nf1213.camera;
 
 import android.app.Activity;
 import android.graphics.BitmapFactory;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+
+import java.io.File;
 
 public class ImageViewerActivity extends Activity {
 
@@ -12,6 +16,7 @@ public class ImageViewerActivity extends Activity {
 
     String imagePath;
     ImageView imageView;
+    FloatingActionButton deleteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,5 +28,19 @@ public class ImageViewerActivity extends Activity {
         imageView = (ImageView) findViewById(R.id.image);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         imageView.setImageBitmap(BitmapFactory.decodeFile(imagePath));
+
+        deleteButton = (FloatingActionButton) findViewById(R.id.delete);
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                File file = new File(imagePath);
+                if (file.exists()) {
+                    file.delete();
+                    setResult(GalleryActivity.IMAGE_DELETED);
+                    finish();
+                }
+            }
+        });
     }
 }

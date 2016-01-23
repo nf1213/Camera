@@ -23,6 +23,9 @@ public class GalleryActivity extends Activity {
 
     List<String> imagePaths;
     GridView imageGrid;
+    ImageAdapter imageAdapter;
+    public static int IMAGE_DELETED = 1;
+    public static int REQUEST_NULL = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +47,8 @@ public class GalleryActivity extends Activity {
         int columnWidth = ( windowWidth / 3 );
         imageGrid.setColumnWidth(columnWidth);
 
-        imageGrid.setAdapter(new ImageAdapter(imagePaths, this, columnWidth));
+        imageAdapter = new ImageAdapter(imagePaths, this, columnWidth);
+        imageGrid.setAdapter(imageAdapter);
     }
 
     public List<String> getImages() {
@@ -110,11 +114,21 @@ public class GalleryActivity extends Activity {
                 public void onClick(View v) {
                     Intent intent = new Intent(context, ImageViewerActivity.class);
                     intent.putExtra(ImageViewerActivity.IMAGE_PATH, (String) v.getTag());
-                    startActivity(intent);
+                    startActivityForResult(intent, REQUEST_NULL);
                 }
             });
 
             return imageView;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == IMAGE_DELETED) {
+            if (imageAdapter != null) {
+                imagePaths = getImages();
+                imageAdapter.notifyDataSetChanged();
+            }
         }
     }
 }
