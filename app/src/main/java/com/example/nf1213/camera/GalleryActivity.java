@@ -3,10 +3,8 @@ package com.example.nf1213.camera;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -95,21 +93,19 @@ public class GalleryActivity extends Activity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ImageView imageView;
             if (convertView == null) {
                 // if it's not recycled, initialize some attributes
-                imageView = new ImageView(context);
-                imageView.setLayoutParams(new GridView.LayoutParams(width - 4, (int) Math.round(width * (.75)) - 4));
-                imageView.setPadding(2,2,2,2);
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            } else {
-                imageView = (ImageView) convertView;
+                convertView = ((Activity) context).getLayoutInflater().inflate(R.layout.image_view_gallery_item, parent, false);
+                convertView.setLayoutParams(new GridView.LayoutParams(width - 4, (int) Math.round(width * (.75)) - 4));
+                ((ImageView) convertView).setScaleType(ImageView.ScaleType.CENTER_CROP);
             }
-            imageView.setImageBitmap(BitmapFactory.decodeFile(data.get(position)));
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 4;
+            ((ImageView) convertView).setImageBitmap(BitmapFactory.decodeFile(data.get(position), options));
 
-            imageView.setTag(data.get(position));
+            convertView.setTag(data.get(position));
 
-            imageView.setOnClickListener(new View.OnClickListener() {
+            convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, ImageViewerActivity.class);
@@ -118,7 +114,7 @@ public class GalleryActivity extends Activity {
                 }
             });
 
-            return imageView;
+            return convertView;
         }
     }
 

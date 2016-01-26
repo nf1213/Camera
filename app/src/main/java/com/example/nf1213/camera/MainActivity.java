@@ -227,7 +227,9 @@ public class MainActivity extends Activity {
                 fos.write(data);
                 fos.close();
 
-                Bitmap imgBitmap = BitmapFactory.decodeFile(pictureFile.getAbsolutePath());
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 4;
+                Bitmap imgBitmap = BitmapFactory.decodeFile(pictureFile.getAbsolutePath(), options);
                 imageView.setImageBitmap(imgBitmap);
 
             } catch (FileNotFoundException e) {
