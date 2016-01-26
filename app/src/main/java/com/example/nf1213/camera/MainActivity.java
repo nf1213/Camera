@@ -47,7 +47,9 @@ public class MainActivity extends Activity {
         mostRecentImage = getMostRecentImage();
         imageView = (ImageView) findViewById(R.id.image);
         if (!TextUtils.isEmpty(mostRecentImage)) {
-            imageView.setImageBitmap(BitmapFactory.decodeFile(mostRecentImage));
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 8;
+            imageView.setImageBitmap(BitmapFactory.decodeFile(mostRecentImage, options));
         }
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -228,7 +230,7 @@ public class MainActivity extends Activity {
                 fos.close();
 
                 BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inSampleSize = 4;
+                options.inSampleSize = 8;
                 Bitmap imgBitmap = BitmapFactory.decodeFile(pictureFile.getAbsolutePath(), options);
                 imageView.setImageBitmap(imgBitmap);
 

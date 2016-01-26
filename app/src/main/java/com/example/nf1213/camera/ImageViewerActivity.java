@@ -27,7 +27,9 @@ public class ImageViewerActivity extends Activity {
 
         imageView = (ImageView) findViewById(R.id.image);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        imageView.setImageBitmap(BitmapFactory.decodeFile(imagePath));
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 4;
+        imageView.setImageBitmap(BitmapFactory.decodeFile(imagePath, options));
 
         deleteButton = (FloatingActionButton) findViewById(R.id.delete);
 

@@ -100,7 +100,7 @@ public class GalleryActivity extends Activity {
                 ((ImageView) convertView).setScaleType(ImageView.ScaleType.CENTER_CROP);
             }
             BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 4;
+            options.inSampleSize = 8;
             ((ImageView) convertView).setImageBitmap(BitmapFactory.decodeFile(data.get(position), options));
 
             convertView.setTag(data.get(position));
