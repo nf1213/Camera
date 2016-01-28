@@ -3,7 +3,6 @@ package com.example.nf1213.camera;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -12,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -99,17 +100,17 @@ public class GalleryActivity extends Activity {
                 convertView.setLayoutParams(new GridView.LayoutParams(width - 4, (int) Math.round(width * (.75)) - 4));
                 ((ImageView) convertView).setScaleType(ImageView.ScaleType.CENTER_CROP);
             }
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 8;
-            ((ImageView) convertView).setImageBitmap(BitmapFactory.decodeFile(data.get(position), options));
+            Glide.with(context)
+                    .load(data.get(position))
+                    .into((ImageView)convertView);
 
-            convertView.setTag(data.get(position));
+            convertView.setTag(R.id.image_view_id, data.get(position));
 
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, ImageViewerActivity.class);
-                    intent.putExtra(ImageViewerActivity.IMAGE_PATH, (String) v.getTag());
+                    intent.putExtra(ImageViewerActivity.IMAGE_PATH, (String) v.getTag(R.id.image_view_id));
                     startActivityForResult(intent, REQUEST_NULL);
                 }
             });

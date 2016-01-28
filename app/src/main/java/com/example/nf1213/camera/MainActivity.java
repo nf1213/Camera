@@ -1,12 +1,14 @@
 package com.example.nf1213.camera;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
@@ -17,6 +19,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,6 +42,8 @@ public class MainActivity extends Activity {
 
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
+
+    private final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -212,33 +218,54 @@ public class MainActivity extends Activity {
     }
 
     final Camera.PictureCallback jpegCallback = new Camera.PictureCallback() {
-        private final String TAG = MainActivity.class.getSimpleName();
 
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             camera.startPreview();
+            new SaveTask(getApplicationContext(), imageView).execute(data);
+        }
+    };
+
+    public class SaveTask extends AsyncTask<byte[], String, File> {
+        Context context;
+        ImageView imageView;
+
+        public SaveTask(Context context, ImageView imageView) {
+            this.context = context;
+            this.imageView = imageView;
+        }
+        @Override
+        protected File doInBackground(byte[]... data) {
 
             File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
             if (pictureFile == null){
                 Log.d(TAG, "Error creating media file, check storage permissions: ");
-                return;
+                return null;
             }
 
             try {
                 FileOutputStream fos = new FileOutputStream(pictureFile);
-                fos.write(data);
+                fos.write(data[0]);
                 fos.close();
 
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inSampleSize = 8;
-                Bitmap imgBitmap = BitmapFactory.decodeFile(pictureFile.getAbsolutePath(), options);
-                imageView.setImageBitmap(imgBitmap);
+                return pictureFile;
 
             } catch (FileNotFoundException e) {
                 Log.d(TAG, "File not found: " + e.getMessage());
             } catch (IOException e) {
                 Log.d(TAG, "Error accessing file: " + e.getMessage());
             }
+
+            return null;
         }
-    };
+
+        @Override
+        protected void onPostExecute(File file) {
+            Glide.with(context)
+                    .load(file)
+                    .into(imageView);
+
+            super.onPostExecute(file);
+        }
+    }
 }

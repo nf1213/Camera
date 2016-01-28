@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+
 import java.io.File;
 
 public class ImageViewerActivity extends Activity {
@@ -27,9 +29,9 @@ public class ImageViewerActivity extends Activity {
 
         imageView = (ImageView) findViewById(R.id.image);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 4;
-        imageView.setImageBitmap(BitmapFactory.decodeFile(imagePath, options));
+        Glide.with(this)
+                .load(imagePath)
+                .into(imageView);
 
         deleteButton = (FloatingActionButton) findViewById(R.id.delete);
 
