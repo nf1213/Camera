@@ -8,8 +8,6 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import java.io.IOException;
-
 /**
  * Created by nicole on 1/14/16.
  */
