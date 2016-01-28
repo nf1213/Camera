@@ -53,9 +53,9 @@ public class MainActivity extends Activity {
         mostRecentImage = getMostRecentImage();
         imageView = (ImageView) findViewById(R.id.image);
         if (!TextUtils.isEmpty(mostRecentImage)) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = 8;
-            imageView.setImageBitmap(BitmapFactory.decodeFile(mostRecentImage, options));
+            Glide.with(this)
+                    .load(mostRecentImage)
+                    .into(imageView);
         }
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
