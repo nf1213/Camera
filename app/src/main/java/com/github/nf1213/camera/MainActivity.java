@@ -1,4 +1,4 @@
-package com.example.nf1213.camera;
+package com.github.nf1213.camera;
 
 import android.app.Activity;
 import android.content.Context;

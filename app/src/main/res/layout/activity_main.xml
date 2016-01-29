@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.nf1213.camera.MainActivity">
+    tools:context="com.github.nf1213.camera.MainActivity">
 
     <FrameLayout
         android:id="@+id/camera_preview"

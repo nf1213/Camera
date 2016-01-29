@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.nf1213.camera">
+    package="com.github.nf1213.camera">
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.github.nf1213.camera.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -24,11 +24,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".NoCameraActivity"
+            android:name="com.github.nf1213.camera.NoCameraActivity"
             android:label="@string/title_activity_no_camera"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".GalleryActivity" />
-        <activity android:name=".ImageViewerActivity"></activity>
+        <activity android:name="com.github.nf1213.camera.GalleryActivity" />
+        <activity android:name="com.github.nf1213.camera.ImageViewerActivity"></activity>
     </application>
 
 </manifest>

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.nf1213.camera.GalleryActivity">
+    tools:context="com.github.nf1213.camera.GalleryActivity">
 
     <GridView
         android:id="@+id/gridview"
